@@ -6,6 +6,8 @@ The .FITS files can be downloaded from the CHANG-ES website (available at: https
 
 The data that is read in on line 145 is the CHANG-ES_pipeline_1_data.txt file in the repository.
 
+The PATH string on line 116 needs to be redifined for each user.
+
 The data analysis products for NGC3628 are included in the repository as examples.
 
 Some of the functions were written in conjuction with Lee Whittaker based on work carried out by Richard Battye & Lee Whittaker.
