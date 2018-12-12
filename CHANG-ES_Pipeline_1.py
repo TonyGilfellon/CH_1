@@ -11,11 +11,9 @@ IMPORT MODULES
 '''
 
 import numpy as np
-from matplotlib import pyplot as plt
-from matplotlib import colors
+from matplotlib import pyplot as plt, colors, ticker
 from astropy.io import fits
 from scipy.stats import binned_statistic as bs
-from matplotlib import ticker
 from scipy.optimize import fmin
 
 '''
@@ -113,7 +111,7 @@ res = vector_plot_resolution = int(3)
 NAME FILEPATH FOR .txt DATA, STOKES_I, P, ALPHA AND SAVED DATA PRODUCTS
 '''
 
-PATH = '/home/tony/Desktop/CHANG-ES/' 
+PATH = '' 
 
 '''
 DEFINE NOISE LEVELS FOR CUTS
@@ -142,7 +140,7 @@ SIGNALC = []
 READ IN DATA FOR C-BAND
 '''
 
-NGClist=np.loadtxt('%sCHANG-ES_Pipeline_1_data.txt' %PATH)
+NGClist = np.loadtxt('%sCHANG-ES_Pipeline_1_data.txt' %PATH)
 for row in NGClist:
     
     NGC	= int(row[0])		
@@ -333,7 +331,7 @@ for row in NGClist:
     ABC_FLAT = ABC_FLAT[ABC_FLAT ==ABC_FLAT]
     msin = (np.mean(np.sin(2.0*ABC_FLAT)))
     mcos = (np.mean(np.cos(2.0*ABC_FLAT)))
-    mean_ABC = signalC= 0.5*np.arctan2(msin,mcos)
+    mean_ABC = signalC = 0.5*np.arctan2(msin,mcos)
     r2 = (mcos**2.)+(msin**2)
     re2 = (NC/(NC-1.)*(r2-(1./NC))) 
     s2 = 0.25*np.log(1./re2)
@@ -351,10 +349,10 @@ for row in NGClist:
     CREATE AND SAVE ALPHA & BETA HISTOGRAM
     '''
     
-    plt.hist(np.degrees(a_flat),range=[-90.0,90.0], bins=nbin, edgecolor='red', linewidth=1.1, histtype='step', normed=True, label=r'$alpha$')	
-    plt.hist(np.degrees(b_flat),range=[-90.0,90.0], bins=nbin, edgecolor='blue', facecolor='b', linewidth=1.1, histtype='stepfilled', alpha=0.3, normed=True, label=r'$beta$')
-    plt.xlabel(r' $alpha$'' (degs) or 'r'$beta$'' (degs)')
-    plt.ylabel(r' $P(alpha)$'' or 'r' $P(beta)$')
+    plt.hist(np.degrees(a_flat),range=[-90.0,90.0], bins=nbin, edgecolor='red', linewidth=1.1, histtype='step', normed=True, label=r'$\alpha$')	
+    plt.hist(np.degrees(b_flat),range=[-90.0,90.0], bins=nbin, edgecolor='blue', facecolor='b', linewidth=1.1, histtype='stepfilled', alpha=0.3, normed=True, label=r'$\beta$')
+    plt.xlabel(r' $\alpha$'' (degs) or 'r'$\beta$'' (degs)')
+    plt.ylabel(r' $P(\alpha)$'' or 'r' $P(\beta)$')
     plt.legend(loc=2)
     plt.savefig('%s%d%s_A.png' %(PATH,NGC,band), bbox_inches='tight')
     plt.close('all')
@@ -386,7 +384,7 @@ for row in NGClist:
     cmap = colors.ListedColormap(['red', 'green', 'blue', 'blue', 'green', 'red'])                                  
     bounds = [-90, -60,-30, 0.0, 30, 60, 90]
     normal = colors.BoundaryNorm(bounds, cmap.N)
-    im1 = plt.imshow(np.degrees(abc_sig), origin='lower',cmap=cmap, alpha=0.7, extent=[0,(r/3),0,(r/3)])
+    im1 = plt.imshow(np.degrees(abc_sig), origin='lower',cmap=cmap, alpha=0.7, extent=[0,(r/res),0,(r/res)])
     cbar = fig.colorbar(im1, boundaries = bounds, norm = normal, cmap=cmap)           
     plt.clim(-90,90)
     im2 = plt.contour(galZ, origin='lower', extent=[0,(r/res),0,(r/res)], cmap='gist_gray', alpha=0.7)     
@@ -430,9 +428,9 @@ for row in NGClist:
     Bedges = np.array([0.5*(Bedges[i] + Bedges[i+1]) for i in np.arange(len(Bedges)-1)])
 
     plt.hist(abc_flat,range=[-0.5*np.pi, 0.5*np.pi], bins=nbin, edgecolor='black', linewidth=1.1, histtype='step', normed=True)	
-    plt.xlabel(r' $alpha - beta$'' (degs)')
-    plt.ylabel(r' $P(alpha - beta)$')    
-    plt.plot(Bedges, fit, 'r--', alpha=1.0, linewidth=0.8)    
+    plt.xlabel(r' $\alpha - \beta$'' (degs)')
+    plt.ylabel(r' $P(\alpha - \beta)$')    
+    plt.plot(Bedges, fit, 'r--', alpha=1.0, linewidth=0.8, label='Fitted Wrapped Cauchy Distribution')    
     plt.savefig('%s%d%s_A-B.png' %(PATH,NGC,band), bbox_inches='tight')
     plt.close('all')
     
